@@ -49,7 +49,7 @@ NSRange NIMakeNSRangeFromCFRange(CFRange range) {
   // unsigned integers, let's check whether we're about to lose any information.
   NIDASSERT(range.location >= 0 && range.location <= NSIntegerMax);
   NIDASSERT(range.length >= 0 && range.length <= NSIntegerMax);
-  return NSMakeRange(range.location, range.length);
+  return NSMakeRange((NSUInteger)range.location, (NSUInteger)range.length);
 }
 
 

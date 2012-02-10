@@ -40,7 +40,7 @@ NI_FIX_CATEGORY_BUG(NSStringNimbusCore)
  */
 - (BOOL)isWhitespaceAndNewlines {
   NSCharacterSet* whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-  for (NSInteger i = 0; i < self.length; ++i) {
+  for (NSUInteger i = 0; i < self.length; ++i) {
     unichar c = [self characterAtIndex:i];
     if (![whitespace characterIsMember:c]) {
       return NO;

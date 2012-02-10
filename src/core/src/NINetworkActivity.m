@@ -103,11 +103,13 @@ void NISwizzleMethodsForNetworkActivityDebugging(void);
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 void NISwizzleMethodsForNetworkActivityDebugging(void) {
   NISwapInstanceMethods([UIApplication class],
                         @selector(setNetworkActivityIndicatorVisible:),
                         @selector(nimbusDebugSetNetworkActivityIndicatorVisible:));
 }
+#pragma GCC diagnostic warning "-Wselector"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

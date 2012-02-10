@@ -225,6 +225,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 + (UIImage *)imageFromSource: (UIImage *)src
              withContentMode: (UIViewContentMode)contentMode
                     cropRect: (CGRect)cropRect
@@ -345,8 +346,8 @@
 
     // Create our final composite image.
     CGContextRef dstBmp = CGBitmapContextCreate(NULL,
-                                                displaySize.width * screenScale,
-                                                displaySize.height * screenScale,
+                                                (size_t)(displaySize.width * screenScale),
+                                                (size_t)(displaySize.height * screenScale),
                                                 8,
                                                 0,
                                                 colorSpace,
@@ -405,6 +406,6 @@
 
   return resultImage;
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 @end

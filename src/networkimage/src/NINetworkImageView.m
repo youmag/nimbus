@@ -171,6 +171,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)_didStartLoading {
   if ([self.delegate respondsToSelector:@selector(networkImageViewDidStartLoad:)]) {
     [self.delegate networkImageViewDidStartLoad:self];
@@ -178,9 +179,11 @@
 
   [self networkImageViewDidStartLoading];
 }
+#pragma GCC diagnostic warning "-Wselector"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)_didFinishLoadingWithImage: (UIImage *)image
                    cacheIdentifier: (NSString *)cacheIdentifier
                        displaySize: (CGSize)displaySize
@@ -211,6 +214,7 @@
 
   [self networkImageViewDidLoadImage:image];
 }
+#pragma GCC diagnostic warning "-Wselector"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -68,6 +68,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (UIView<NIRecyclableView> *)dequeueReusableViewWithIdentifier:(NSString *)reuseIdentifier {
   NSMutableArray* views = [_reuseIdentifiersToRecycledViews objectForKey:reuseIdentifier];
   UIView<NIRecyclableView>* view = [views lastObject];
@@ -80,9 +81,10 @@
   }
   return view;
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)recycleView:(UIView<NIRecyclableView> *)view {
   NIDASSERT([view isKindOfClass:[UIView class]]);
 
@@ -106,7 +108,7 @@
   }
   [views addObject:view];
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)removeAllViews {

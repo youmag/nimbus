@@ -42,15 +42,15 @@
 
 #pragma mark Configurable Properties
 
-@property (assign) CGRect imageCropRect; // Default: CGRectZero
-@property (assign) CGSize imageDisplaySize; // Default: CGSizeZero
-@property (assign) NINetworkImageViewScaleOptions scaleOptions; // Default: NINetworkImageViewScaleToFitLeavesExcessAndScaleToFillCropsExcess
-@property (assign) CGInterpolationQuality interpolationQuality; // Default: kCGInterpolationDefault
-@property (assign) UIViewContentMode imageContentMode; // Default: UIViewContentModeScaleToFill
+@property (atomic, assign) CGRect imageCropRect; // Default: CGRectZero
+@property (atomic, assign) CGSize imageDisplaySize; // Default: CGSizeZero
+@property (atomic, assign) NINetworkImageViewScaleOptions scaleOptions; // Default: NINetworkImageViewScaleToFitLeavesExcessAndScaleToFillCropsExcess
+@property (atomic, assign) CGInterpolationQuality interpolationQuality; // Default: kCGInterpolationDefault
+@property (atomic, assign) UIViewContentMode imageContentMode; // Default: UIViewContentModeScaleToFill
 
 #pragma mark Results
 
-@property (retain) UIImage* imageCroppedAndSizedForDisplay;
+@property (atomic, retain) UIImage* imageCroppedAndSizedForDisplay;
 
 @end
 

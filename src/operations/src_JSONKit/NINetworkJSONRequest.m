@@ -17,7 +17,6 @@
 #import "NINetworkJSONRequest.h"
 
 #import "NIOperations+Subclassing.h"
-#import "JSONKit.h"
 
 //
 // Compiler errors? JSONKit.h file not found?
