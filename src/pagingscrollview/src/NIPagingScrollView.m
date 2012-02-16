@@ -210,7 +210,8 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
   int firstVisiblePageIndex = boundi(currentVisiblePageIndex - 1, 0, _numberOfPages - 1);
   int lastVisiblePageIndex  = boundi(currentVisiblePageIndex + 1, 0, _numberOfPages - 1);
 
-  return NSMakeRange(firstVisiblePageIndex, lastVisiblePageIndex - firstVisiblePageIndex + 1);
+  return NSMakeRange((NSUInteger)firstVisiblePageIndex, 
+                     (NSUInteger)(lastVisiblePageIndex - firstVisiblePageIndex + 1));
 }
 
 
@@ -224,12 +225,13 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)resetPage:(id<NIPagingScrollViewPage>)page {
   if ([page respondsToSelector:@selector(pageDidDisappear)]) {
     [page pageDidDisappear];
   }
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)resetSurroundingPages {
@@ -273,13 +275,14 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)updateVisiblePages {
   NSRange visiblePageRange = [self visiblePageRange];
 
   // Recycle no-longer-visible pages. We copy _visiblePages because we may modify it while we're
   // iterating over it.
   for (UIView<NIPagingScrollViewPage>* page in [[_visiblePages copy] autorelease]) {
-    if (!NSLocationInRange(page.pageIndex, visiblePageRange)) {
+    if (!NSLocationInRange((NSUInteger)page.pageIndex, visiblePageRange)) {
       [_viewRecycler recycleView:page];
       [page removeFromSuperview];
 
@@ -300,10 +303,10 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     }
       
     // Add missing pages.
-    for (int pageIndex = visiblePageRange.location;
+    for (NSUInteger pageIndex = visiblePageRange.location;
          pageIndex < NSMaxRange(visiblePageRange); ++pageIndex) {
-      if (![self isDisplayingPageForIndex:pageIndex]) {
-        [self displayPageAtIndex:pageIndex];
+      if (![self isDisplayingPageForIndex:(int)pageIndex]) {
+        [self displayPageAtIndex:(int)pageIndex];
       }
     }
   } else {
@@ -315,9 +318,10 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     [self.delegate pagingScrollViewDidChangePages:self];
   }
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)layoutVisiblePages {
   for (UIView<NIPagingScrollViewPage>* page in _visiblePages) {
     CGRect pageFrame = [self frameForPageAtIndex:page.pageIndex];
@@ -329,7 +333,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     }
   }
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,6 +367,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
   if (!_isModifyingContentOffset) {
     // This method is called repeatedly as the user scrolls so updateVisiblePages must be
@@ -378,7 +383,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     [self.delegate scrollViewDidScroll:scrollView];
   }
 }
-
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -485,7 +490,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
   CGFloat pageWidth = self.pagingScrollView.bounds.size.width;
 
   if (offset >= 0) {
-    _firstVisiblePageIndexBeforeRotation = floorf(offset / pageWidth);
+    _firstVisiblePageIndexBeforeRotation = (NSInteger)floorf(offset / pageWidth);
     _percentScrolledIntoFirstVisiblePage = ((offset
                                             - (_firstVisiblePageIndexBeforeRotation * pageWidth))
                                            / pageWidth);
@@ -603,12 +608,6 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setCenterPageIndex:(NSInteger)centerPageIndex {
   [self moveToPageAtIndex:centerPageIndex animated:NO];
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)setCenterPageIndex:(NSInteger)centerPageIndex animated:(BOOL)animated {
-  [self moveToPageAtIndex:centerPageIndex animated:animated];
 }
 
 
