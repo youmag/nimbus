@@ -49,6 +49,7 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma GCC diagnostic ignored "-Wselector"
 + (UITableViewCell *)cellWithClass:(Class)cellClass
                          tableView:(UITableView *)tableView
                             object:(id)object {
@@ -115,6 +116,7 @@
   return cell;
 }
 
+#pragma GCC diagnostic warning "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)mapObjectClass:(Class)objectClass toCellClass:(Class)cellClass {

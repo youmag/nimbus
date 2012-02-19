@@ -269,7 +269,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-  return MAX(1, self.sections.count);
+  return (NSInteger)MAX(1, (NSInteger)self.sections.count);
 }
 
 
