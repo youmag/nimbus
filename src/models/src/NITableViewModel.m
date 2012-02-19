@@ -275,9 +275,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-  NIDASSERT((section >= 0 && section < self.sections.count) || 0 == self.sections.count);
-  if (section >= 0 && section < self.sections.count) {
-    return [[self.sections objectAtIndex:section] headerTitle];
+  NIDASSERT((section >= 0 && section < (NSInteger)self.sections.count) || 0 == self.sections.count);
+  if (section >= 0 && section < (NSInteger)self.sections.count) {
+    return [[self.sections objectAtIndex:(NSUInteger)section] headerTitle];
 
   } else {
     return nil;
@@ -287,9 +287,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-  NIDASSERT((section >= 0 && section < self.sections.count) || 0 == self.sections.count);
-  if (section >= 0 && section < self.sections.count) {
-    return [[self.sections objectAtIndex:section] footerTitle];
+  NIDASSERT((section >= 0 && section < (NSInteger)self.sections.count) || 0 == self.sections.count);
+  if (section >= 0 && section < (NSInteger)self.sections.count) {
+    return [[self.sections objectAtIndex:(NSUInteger)section] footerTitle];
     
   } else {
     return nil;
@@ -331,9 +331,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  NIDASSERT(section < self.sections.count || 0 == self.sections.count);
-  if (section < self.sections.count) {
-    return [[[self.sections objectAtIndex:section] rows] count];
+  NIDASSERT(section < (NSInteger)self.sections.count || 0 == self.sections.count);
+  if (section < (NSInteger)self.sections.count) {
+    return (NSInteger)[[[self.sections objectAtIndex:(NSUInteger)section] rows] count];
 
   } else {
     return 0;
@@ -382,13 +382,13 @@
 
   id object = nil;
 
-  NIDASSERT(section < self.sections.count);
-  if (section < self.sections.count) {
-    NSArray* rows = [[self.sections objectAtIndex:section] rows];
+  NIDASSERT(section < (NSInteger)self.sections.count);
+  if (section < (NSInteger)self.sections.count) {
+    NSArray* rows = [[self.sections objectAtIndex:(NSUInteger)section] rows];
 
-    NIDASSERT(row < [rows count]);
-    if (row < [rows count]) {
-      object = [rows objectAtIndex:row];
+    NIDASSERT(row < (NSInteger)[rows count]);
+    if (row < (NSInteger)[rows count]) {
+      object = [rows objectAtIndex:(NSUInteger)row];
     }
   }
 
