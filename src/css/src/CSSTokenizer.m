@@ -2164,6 +2164,9 @@ static void yy_flex_strncpy (char *,yyconst char *,int );
 static int yy_flex_strlen (yyconst char * );
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
+
 #ifndef YY_NO_INPUT
 
 #ifdef __cplusplus
@@ -2173,6 +2176,8 @@ static int input (void );
 #endif
 
 #endif
+
+#pragma clang diagnostic pop
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
@@ -2324,7 +2329,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+			register YY_CHAR yy_c = (YY_CHAR)yy_ec[YY_SC_TO_UI(*yy_cp)];
 			if ( yy_accept[yy_current_state] )
 				{
 				(yy_last_accepting_state) = yy_current_state;
@@ -2334,9 +2339,9 @@ yy_match:
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
 				if ( yy_current_state >= 370 )
-					yy_c = yy_meta[(unsigned int) yy_c];
+					yy_c = (YY_CHAR)yy_meta[(unsigned int) yy_c];
 				}
-			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+			yy_current_state = yy_nxt[(YY_CHAR)yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
 		while ( yy_base[yy_current_state] != 6624 );
@@ -2764,7 +2769,7 @@ static int yy_get_next_buffer (void)
 	else
 		{
 			yy_size_t num_to_read =
-			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
+			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - (unsigned long)number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
@@ -2799,7 +2804,7 @@ static int yy_get_next_buffer (void)
 			(yy_c_buf_p) = &b->yy_ch_buf[yy_c_buf_p_offset];
 
 			num_to_read = YY_CURRENT_BUFFER_LVALUE->yy_buf_size -
-						number_to_move - 1;
+						(unsigned long)number_to_move - 1;
 
 			}
 
@@ -2832,15 +2837,15 @@ static int yy_get_next_buffer (void)
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	if ((yy_size_t) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+	if ((yy_size_t) ((yy_n_chars) + (YY_CHAR)number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		yy_size_t new_size = (yy_n_chars) + (YY_CHAR)number_to_move + ((yy_n_chars) >> 1);
 		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) cssrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 	}
 
-	(yy_n_chars) += number_to_move;
+	(yy_n_chars) += (YY_CHAR)number_to_move;
 	YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)] = YY_END_OF_BUFFER_CHAR;
 	YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1] = YY_END_OF_BUFFER_CHAR;
 
@@ -2860,7 +2865,7 @@ static int yy_get_next_buffer (void)
 
 	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
-		register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+		register YY_CHAR yy_c = (*yy_cp ? (YY_CHAR)yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
 		if ( yy_accept[yy_current_state] )
 			{
 			(yy_last_accepting_state) = yy_current_state;
@@ -2870,9 +2875,9 @@ static int yy_get_next_buffer (void)
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
 			if ( yy_current_state >= 370 )
-				yy_c = yy_meta[(unsigned int) yy_c];
+				yy_c = (YY_CHAR)yy_meta[(unsigned int) yy_c];
 			}
-		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+		yy_current_state = (YY_CHAR)yy_nxt[(YY_CHAR)yy_base[yy_current_state] + (unsigned int) yy_c];
 		}
 
 	return yy_current_state;
@@ -2898,13 +2903,16 @@ static int yy_get_next_buffer (void)
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
 		if ( yy_current_state >= 370 )
-			yy_c = yy_meta[(unsigned int) yy_c];
+			yy_c = (YY_CHAR)yy_meta[(unsigned int) yy_c];
 		}
-	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+	yy_current_state = yy_nxt[(YY_CHAR)yy_base[yy_current_state] + (unsigned int) yy_c];
 	yy_is_jam = (yy_current_state == 369);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
 
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus
@@ -2930,7 +2938,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
+			yy_size_t offset = (yy_size_t)((yy_c_buf_p) - (yytext_ptr));
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -2979,6 +2987,8 @@ static int yy_get_next_buffer (void)
 	return c;
 }
 #endif	/* ifndef YY_NO_INPUT */
+
+#pragma clang diagnostic pop
 
 /** Immediately switch to a different input stream.
  * @param input_file A readable stream.
@@ -3055,7 +3065,7 @@ static void css_load_buffer_state  (void)
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in css_create_buffer()" );
 
-	b->yy_buf_size = size;
+	b->yy_buf_size = (yy_size_t)size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
@@ -3233,7 +3243,7 @@ static void cssensure_buffer_stack (void)
 		/* Increase the buffer to prepare for a possible push. */
 		int grow_size = 8 /* arbitrary grow size */;
 
-		num_to_alloc = (yy_buffer_stack_max) + grow_size;
+		num_to_alloc = (yy_buffer_stack_max) + (YY_CHAR)grow_size;
 		(yy_buffer_stack) = (struct yy_buffer_state**)cssrealloc
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
@@ -3242,7 +3252,7 @@ static void cssensure_buffer_stack (void)
 			YY_FATAL_ERROR( "out of dynamic memory in cssensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
-		memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, grow_size * sizeof(struct yy_buffer_state*));
+		memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, (YY_CHAR)grow_size * sizeof(struct yy_buffer_state*));
 		(yy_buffer_stack_max) = num_to_alloc;
 	}
 }
@@ -3542,5 +3552,4 @@ void cssfree (void * ptr )
 
 
 int csswrap(void){return 1;}
-
 

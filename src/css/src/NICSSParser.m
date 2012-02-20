@@ -149,7 +149,7 @@ int cssConsume(char* text, int token) {
 
         NIDASSERT(nil != _currentPropertyName);
         if (nil != _currentPropertyName) {
-          NSMutableArray* values = [_mutatingRuleset objectForKey:_currentPropertyName];
+          NSMutableArray* values = [(NSMutableDictionary *)_mutatingRuleset objectForKey:_currentPropertyName];
           [values addObject:lowercaseTextAsString];
 
         } else {
@@ -171,7 +171,7 @@ int cssConsume(char* text, int token) {
     case CSSNUMBER:
     case CSSURI: {
       if (_lastToken == CSSIMPORT && token == CSSURI) {
-        NSInteger prefixLength = @"url(\"".length;
+        NSUInteger prefixLength = @"url(\"".length;
         NSString* filename = [textAsString substringWithRange:NSMakeRange(prefixLength,
                                                                           textAsString.length
                                                                           - prefixLength - 2)];
@@ -331,8 +331,8 @@ int cssConsume(char* text, int token) {
 
   if ([compositeRulesets count] == 1) {
     if ([dependencyFilenames count] > 0) {
-      [[compositeRulesets objectAtIndex:0] setObject:dependencyFilenames
-                                              forKey:kDependenciesSelectorKey];
+        [(NSMutableDictionary *)[compositeRulesets objectAtIndex:0] setObject:dependencyFilenames
+                                                                       forKey:kDependenciesSelectorKey];
     }
     result = [[[compositeRulesets objectAtIndex:0] copy] autorelease];
 
@@ -397,6 +397,9 @@ int cssConsume(char* text, int token) {
   return [self dictionaryForPath:path pathPrefix:pathPrefix delegate:nil];
 }
 
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NSDictionary *)dictionaryForPath:(NSString *)aPath
@@ -479,5 +482,7 @@ int cssConsume(char* text, int token) {
 
   return result;
 }
+
+#pragma clang diagnostic pop
 
 @end
