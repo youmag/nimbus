@@ -307,7 +307,7 @@
   for (UIBarButtonItem* button in _toolbar.items) {
     if (button.tag == 3) {
       NSMutableArray* newItems = [NSMutableArray arrayWithArray:_toolbar.items];
-      [newItems replaceObjectAtIndex:buttonIndex withObject:_stopButton];
+      [newItems replaceObjectAtIndex:(NSUInteger)buttonIndex withObject:_stopButton];
       _toolbar.items = newItems;
       break;
     }
@@ -330,7 +330,7 @@
   for (UIBarButtonItem* button in _toolbar.items) {
     if (button.tag == 3) {
       NSMutableArray* newItems = [NSMutableArray arrayWithArray:_toolbar.items];
-      [newItems replaceObjectAtIndex:buttonIndex withObject:_refreshButton];
+      [newItems replaceObjectAtIndex:(NSUInteger)buttonIndex withObject:_refreshButton];
       _toolbar.items = newItems;
       break;
     }
