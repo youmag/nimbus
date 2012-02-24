@@ -242,6 +242,8 @@ NSString* const NIStylesheetDidChangeNotification = @"NIStylesheetDidChangeNotif
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Applying Styles to Views
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)applyRuleSet:(NICSSRuleset *)ruleSet toView:(UIView *)view {
@@ -250,6 +252,7 @@ NSString* const NIStylesheetDidChangeNotification = @"NIStylesheetDidChangeNotif
   }
 }
 
+#pragma clang diagnostic pop
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)applyStyleToView:(UIView *)view withClassName:(NSString *)className {

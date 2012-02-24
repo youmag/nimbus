@@ -294,11 +294,11 @@ static NSDictionary* sColorTable = nil;
     [[self class] colorFromCssValues:values numberOfConsumedTokens:&skipTokens];
 
     _textShadowOffset = CGSizeZero;
-    if ([values count] - skipTokens >= 1) {
-      _textShadowOffset.width = [[values objectAtIndex:skipTokens] floatValue];
+    if ([values count] - (NSUInteger)skipTokens >= 1) {
+      _textShadowOffset.width = [[values objectAtIndex:(NSUInteger)skipTokens] floatValue];
     }
-    if ([values count] - skipTokens >= 2) {
-      _textShadowOffset.height = [[values objectAtIndex:skipTokens + 1] floatValue];
+    if ([values count] - (NSUInteger)skipTokens >= 2) {
+      _textShadowOffset.height = [[values objectAtIndex:(NSUInteger)skipTokens + 1] floatValue];
     }
     _is.cached.TextShadowOffset = YES;
   }
@@ -608,6 +608,8 @@ static NSDictionary* sColorTable = nil;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Color Tables
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 + (NSDictionary *)colorTable {
@@ -820,6 +822,8 @@ static NSDictionary* sColorTable = nil;
   return sColorTable;
 }
 
+#pragma clang diagnostic pop
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 + (UIColor *)colorFromCssValues:(NSArray *)cssValues numberOfConsumedTokens:(NSInteger *)pNumberOfConsumedTokens {
@@ -852,14 +856,14 @@ static NSDictionary* sColorTable = nil;
 
       // #FFF
       if ([cssString length] == 4) {
-        colorValue = strtol([cssString UTF8String] + 1, nil, 16);
+        colorValue = (unsigned long)strtol([cssString UTF8String] + 1, nil, 16);
         colorValue = ((colorValue & 0xF00) << 12) | ((colorValue & 0xF00) << 8)
         | ((colorValue & 0xF0) << 8) | ((colorValue & 0xF0) << 4)
         | ((colorValue & 0xF) << 4) | (colorValue & 0xF);
 
       // #FFFFFF
       } else if ([cssString length] == 7) {
-        colorValue = strtol([cssString UTF8String] + 1, nil, 16);
+        colorValue = (unsigned long)strtol([cssString UTF8String] + 1, nil, 16);
       }
 
       color = RGBCOLOR(((colorValue & 0xFF0000) >> 16),
