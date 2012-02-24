@@ -18,6 +18,7 @@
 #import <UIKit/UIKit.h>
 
 #import "NimbusCore.h"
+#import "YMScrollView.h"
 
 /**
  * numberOfPages will be this value until reloadData is called.
@@ -44,7 +45,7 @@ extern const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin;
 @interface NIPagingScrollView : UIView <UIScrollViewDelegate> {
 @private
   // Views
-  UIScrollView* _pagingScrollView;
+  YMScrollView* _pagingScrollView;
 
   // Pages
   NSMutableSet* _visiblePages;
@@ -102,7 +103,7 @@ extern const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin;
 
 #pragma mark Subclassing
 
-@property (nonatomic, readonly, retain) UIScrollView* pagingScrollView;
+@property (nonatomic, readonly, retain) YMScrollView* pagingScrollView;
 @property (nonatomic, readonly, copy) NSMutableSet* visiblePages;
 
 - (void)willDisplayPage:(UIView<NIPagingScrollViewPage> *)pageView;
