@@ -103,6 +103,15 @@
     NSData* data  = [NSURLConnection sendSynchronousRequest:request
                                           returningResponse:&response
                                                       error:&networkError];
+      
+      if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+          NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
+          if ([httpResponse statusCode] != 200) {
+              networkError = [NSError errorWithDomain:@"nimbus" 
+                                                 code:[httpResponse statusCode] 
+                                             userInfo:nil];
+          }
+      }
 
     if (nil != networkError) {
       [self operationDidFailWithError:networkError];
