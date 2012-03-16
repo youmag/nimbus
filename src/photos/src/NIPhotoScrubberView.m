@@ -288,7 +288,6 @@ static const NSInteger NIPhotoScrubberViewUnknownTag = -1;
                      + 0.5f);
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)updateVisiblePhotos {
   if (nil == self.dataSource) {
@@ -315,7 +314,7 @@ static const NSInteger NIPhotoScrubberViewUnknownTag = -1;
     // We must first get the photo view at this index.
 
     // If there aren't enough visible photo views then try to recycle another view.
-    if (ix >= [_visiblePhotoViews count]) {
+    if (ix >= (NSInteger)[_visiblePhotoViews count]) {
       photoView = [[[_recycledPhotoViews anyObject] retain] autorelease];
       if (nil == photoView) {
         // Couldn't recycle the view, so create a new one.
@@ -328,7 +327,7 @@ static const NSInteger NIPhotoScrubberViewUnknownTag = -1;
       [_visiblePhotoViews addObject:photoView];
 
     } else {
-      photoView = [_visiblePhotoViews objectAtIndex:ix];
+      photoView = [_visiblePhotoViews objectAtIndex:(NSUInteger)ix];
     }
 
     NSInteger photoIndex = [self photoIndexAtScrubberIndex:ix];
@@ -349,7 +348,6 @@ static const NSInteger NIPhotoScrubberViewUnknownTag = -1;
     photoView.frame = [self frameForThumbAtIndex:ix];
   }
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////

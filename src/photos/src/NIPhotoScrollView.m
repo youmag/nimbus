@@ -319,6 +319,8 @@
   }
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wselector"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setDoubleTapToZoomIsEnabled:(BOOL)enabled {
@@ -341,6 +343,7 @@
   [_doubleTapGestureRecognizer setEnabled:enabled];
 }
 
+#pragma clang diagnostic pop
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (BOOL)isDoubleTapToZoomIsEnabled {
