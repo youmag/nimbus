@@ -43,7 +43,7 @@ extern const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin;
  *      @ingroup NimbusPagingScrollView
  */
 @interface NIPagingScrollView : UIView <UIScrollViewDelegate> {
-@private
+@protected
   // Views
   YMScrollView* _pagingScrollView;
 
