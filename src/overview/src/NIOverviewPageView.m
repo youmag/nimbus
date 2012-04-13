@@ -527,7 +527,7 @@ static const CGFloat kGraphRightMargin = 5;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)contentSizeChanged {
+- (void)contentSizeChanged {return;
   BOOL isBottomNearby = NO;
   if (_logScrollView.contentOffset.y + _logScrollView.bounds.size.height
       >= _logScrollView.contentSize.height - _logScrollView.bounds.size.height) {
