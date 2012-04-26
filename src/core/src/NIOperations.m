@@ -91,20 +91,38 @@
     }
 
   } else { // COV_NF_START
-    // Load the image from the network then.
-    [self operationDidStart];
-
-    NSURLRequest* request = [NSURLRequest requestWithURL:self.url
-                                             cachePolicy:self.cachePolicy
-                                         timeoutInterval:self.timeout];
-
-    NSError* networkError = nil;
-    NSURLResponse* response = nil;
-    NSData* data  = [NSURLConnection sendSynchronousRequest:request
-                                          returningResponse:&response
-                                                      error:&networkError];
+      // Load the image from the network then.
+      [self operationDidStart];
       
+      //NSError * networkError = nil;
+      //NSURLResponse * response = nil;
+      
+      self->_isOperationDone = NO;
+      
+      NSURLRequest* request = [NSURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
+      
+      _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+      [_connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+      [_connection start];
+      
+      while (!self->_isOperationDone) {
+          //
+      }
 
+      NI_RELEASE_SAFELY(pool);
+      return;
+      
+      
+      /*NSURLRequest* request = [NSURLRequest requestWithURL:self.url
+                                               cachePolicy:self.cachePolicy
+                                           timeoutInterval:self.timeout];
+      
+      
+      NSData* data  = [NSURLConnection sendSynchronousRequest:request
+                                            returningResponse:&response
+                                                        error:&networkError];
+      
+      
       if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
           NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
           if ([httpResponse statusCode] != 200) {
@@ -113,20 +131,69 @@
                                              userInfo:nil];
           }
       }
-
-    if (nil != networkError) {
-      [self operationDidFailWithError:networkError];
-
-    } else {
-      self.data = data;
-
-      [self operationWillFinish];
-      [self operationDidFinish];
-    } // COV_NF_END
+      
+      if (nil != networkError) {
+          [self operationDidFailWithError:networkError];
+          
+      } else {
+          self.data = data;
+          
+          [self operationWillFinish];
+          [self operationDidFinish];
+      } // COV_NF_END*/
   }
 
   NI_RELEASE_SAFELY(pool);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark NSURLConnectionDelegate
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)response {
+    _response = [response retain];
+    NSDictionary * headers = [response allHeaderFields];
+    int contentLength = [[headers objectForKey:@"Content-Length"] intValue];
+    
+    if (contentLength > (512 * 1024)) {
+        [self cancel];
+    }
+    
+    _responseData = [[NSMutableData alloc] initWithCapacity:(NSUInteger)contentLength];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)data {
+    [_responseData appendData:data];
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    self.data = self->_responseData;
+    
+    [self operationWillFinish];
+    [self operationDidFinish];
+    
+    NI_RELEASE_SAFELY(_responseData);
+    NI_RELEASE_SAFELY(_connection);
+    
+    self->_isOperationDone = YES;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [self operationDidFailWithError:error];
+    NI_RELEASE_SAFELY(_responseData);
+    NI_RELEASE_SAFELY(_connection);
+    
+    self->_isOperationDone = YES;
+}
+
 
 @end
 
