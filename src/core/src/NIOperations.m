@@ -158,8 +158,16 @@
     NSDictionary * headers = [response allHeaderFields];
     int contentLength = [[headers objectForKey:@"Content-Length"] intValue];
     
-    if (contentLength > (512 * 1024)) {
+    if (contentLength > (20 * 1024)) {
         [self cancel];
+        
+        [self operationDidFailWithError:[NSError errorWithDomain:@"TooBigData" code:[response statusCode] userInfo:nil]];
+        NI_RELEASE_SAFELY(_responseData);
+        NI_RELEASE_SAFELY(_connection);
+        
+        self->_isOperationDone = YES;
+        
+        return;
     }
     
     _responseData = [[NSMutableData alloc] initWithCapacity:(NSUInteger)contentLength];
