@@ -202,6 +202,15 @@
     self->_isOperationDone = YES;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+    NSCachedURLResponse * memOnlyCachedResponse =
+    [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response
+                                             data:cachedResponse.data
+                                         userInfo:cachedResponse.userInfo
+                                    storagePolicy:NSURLCacheStorageAllowedInMemoryOnly];
+    return [memOnlyCachedResponse autorelease];
+}
 
 @end
 

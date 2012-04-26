@@ -49,6 +49,7 @@
     self.interpolationQuality = kCGInterpolationDefault;
     self.scaleOptions = NINetworkImageViewScaleToFitLeavesExcessAndScaleToFillCropsExcess;
     self.imageContentMode = UIViewContentModeScaleToFill;
+    self.cachePolicy = NSURLRequestReturnCacheDataElseLoad;
   }
   return self;
 }
