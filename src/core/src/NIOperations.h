@@ -93,6 +93,11 @@
  *      @ingroup Operations
  */
 @interface NINetworkRequestOperation : NIOperation {
+    NSURLConnection * _connection;
+    NSHTTPURLResponse * _response;
+    NSMutableData * _responseData;
+    BOOL _isOperationDone;
+    
 @private
   // [in]
   NSURL* _url;
