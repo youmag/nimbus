@@ -107,6 +107,7 @@
       
       while (!self->_isOperationDone) {
           //
+          [NSDate date]; // Preventing strange behavior in release mode
       }
 
       NI_RELEASE_SAFELY(pool);
