@@ -99,7 +99,7 @@
       
       self->_isOperationDone = NO;
       
-      NSURLRequest* request = [NSURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
+      NSURLRequest * request = [NSURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
       
       _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
       [_connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
@@ -159,7 +159,7 @@
     NSDictionary * headers = [response allHeaderFields];
     int contentLength = [[headers objectForKey:@"Content-Length"] intValue];
     
-    if (contentLength > (512 * 1024)) {
+    if (contentLength > (512 * 1024) || ([response statusCode] != 200)) {
         [self cancel];
         
         [self operationDidFailWithError:[NSError errorWithDomain:@"TooBigData" code:[response statusCode] userInfo:nil]];
