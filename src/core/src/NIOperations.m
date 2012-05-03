@@ -105,9 +105,9 @@
       [_connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
       [_connection start];
       
+      // Preventing loop optimisation
       while (!self->_isOperationDone) {
-          //
-          [NSDate date]; // Preventing strange behavior in release mode
+          [NSThread sleepForTimeInterval:.25f];
       }
 
       NI_RELEASE_SAFELY(pool);
