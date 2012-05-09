@@ -159,7 +159,14 @@
     NSDictionary * headers = [response allHeaderFields];
     int contentLength = [[headers objectForKey:@"Content-Length"] intValue];
     
-    if (contentLength > (512 * 1024) || ([response statusCode] != 200)) {
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+        NSError * networkError = [NSError errorWithDomain:NSURLErrorDomain code:response.statusCode userInfo:nil];
+        [self cancel];
+        [self operationDidFailWithError:networkError];
+        return;
+    }
+    
+    if (contentLength > (512 * 1024)) {
         [self cancel];
         
         [self operationDidFailWithError:[NSError errorWithDomain:@"TooBigData" code:[response statusCode] userInfo:nil]];
