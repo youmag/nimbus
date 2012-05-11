@@ -108,7 +108,7 @@ typedef enum {
 @property (nonatomic, readwrite, assign) NSTimeInterval maxAge;     // Default: 0
 
 @property (nonatomic, readwrite, copy) NSString* memoryCachePrefix; // Default: nil
-@property (nonatomic, readonly, copy) NSString* lastPathToNetworkImage;
+@property (nonatomic, retain) NSString* lastPathToNetworkImage;
 
 #pragma mark Requesting a Network Image
 
