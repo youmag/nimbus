@@ -31,6 +31,7 @@
 @synthesize cachePolicy = _cachePolicy;
 @synthesize data = _data;
 @synthesize processedObject = _processedObject;
+@synthesize condition = _condition;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,8 @@
   NI_RELEASE_SAFELY(_url);
   NI_RELEASE_SAFELY(_data);
   NI_RELEASE_SAFELY(_processedObject);
-  
+  NI_RELEASE_SAFELY(_condition);
+    
   [super dealloc];
 }
 
@@ -49,6 +51,10 @@
     self.url = url;
     self.timeout = 60;
     self.cachePolicy = NSURLRequestUseProtocolCachePolicy;
+      
+    NSCondition * cond = [[NSCondition alloc] init];
+    self.condition = cond;
+    [cond release];
   }
   return self;
 }
@@ -106,43 +112,15 @@
       [_connection start];
       
       // Preventing loop optimisation
+      [[self condition] lock];
       while (!self->_isOperationDone) {
-          [NSThread sleepForTimeInterval:.25f];
+          //[NSThread sleepForTimeInterval:.25f];
+          [[self condition] wait];
       }
+      [[self condition] unlock];
 
       NI_RELEASE_SAFELY(pool);
-      return;
-      
-      
-      /*NSURLRequest* request = [NSURLRequest requestWithURL:self.url
-                                               cachePolicy:self.cachePolicy
-                                           timeoutInterval:self.timeout];
-      
-      
-      NSData* data  = [NSURLConnection sendSynchronousRequest:request
-                                            returningResponse:&response
-                                                        error:&networkError];
-      
-      
-      if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-          NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *)response;
-          if ([httpResponse statusCode] != 200) {
-              networkError = [NSError errorWithDomain:@"nimbus" 
-                                                 code:[httpResponse statusCode] 
-                                             userInfo:nil];
-          }
-      }
-      
-      if (nil != networkError) {
-          [self operationDidFailWithError:networkError];
-          
-      } else {
-          self.data = data;
-          
-          [self operationWillFinish];
-          [self operationDidFinish];
-      } // COV_NF_END*/
-  }
+  } // COV_NF_END
 
   NI_RELEASE_SAFELY(pool);
 }
@@ -190,6 +168,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [[self condition] lock];
+    
     self.data = self->_responseData;
     
     [self operationWillFinish];
@@ -199,15 +179,23 @@
     NI_RELEASE_SAFELY(_connection);
     
     self->_isOperationDone = YES;
+    
+    [[self condition] signal];
+    [[self condition] unlock];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [[self condition] lock];
+    
     [self operationDidFailWithError:error];
     NI_RELEASE_SAFELY(_responseData);
     NI_RELEASE_SAFELY(_connection);
     
     self->_isOperationDone = YES;
+
+    [[self condition] signal];
+    [[self condition] unlock];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
