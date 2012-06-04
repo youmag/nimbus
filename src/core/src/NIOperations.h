@@ -44,13 +44,15 @@
  *      @ingroup Operations
  */
 @interface NIOperation : NSOperation {
+    BOOL _didFail;
+
 @private
   id<NIOperationDelegate> _delegate;
 
   NSInteger _tag;
 
   NSError* _lastError;
-
+    
 #if NS_BLOCKS_AVAILABLE
   // Performed on the main thread.
   NIBasicBlock _didStartBlock;

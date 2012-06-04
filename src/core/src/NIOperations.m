@@ -48,6 +48,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithURL:(NSURL *)url {
   if ((self = [super init])) {
+      self->_didFail = NO;
     self.url = url;
     self.timeout = 60;
     self.cachePolicy = NSURLRequestUseProtocolCachePolicy;
@@ -134,6 +135,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)response {
     _response = [response retain];
+    DLog(@"%@ - %i", [response URL], response.statusCode);
     NSDictionary * headers = [response allHeaderFields];
     int contentLength = [[headers objectForKey:@"Content-Length"] intValue];
     
@@ -141,6 +143,13 @@
         NSError * networkError = [NSError errorWithDomain:NSURLErrorDomain code:response.statusCode userInfo:nil];
         [self cancel];
         [self operationDidFailWithError:networkError];
+        
+        NI_RELEASE_SAFELY(_responseData);
+        NI_RELEASE_SAFELY(_connection);
+        
+        self->_isOperationDone = YES;
+        
+        self->_didFail = YES;
         return;
     }
     
@@ -172,8 +181,10 @@
     
     self.data = self->_responseData;
     
-    [self operationWillFinish];
-    [self operationDidFinish];
+    if (!self->_didFail) {
+        [self operationWillFinish];
+        [self operationDidFinish];
+    }
     
     NI_RELEASE_SAFELY(_responseData);
     NI_RELEASE_SAFELY(_connection);
