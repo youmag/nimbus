@@ -120,7 +120,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)mapObjectClass:(Class)objectClass toCellClass:(Class)cellClass {
-  [self.objectToCellMap setObject:cellClass forKey:objectClass];
+  [self.objectToCellMap setObject:cellClass forKey:(id <NSCopying>)objectClass];
 }
 
 
