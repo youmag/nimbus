@@ -281,7 +281,8 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
   // Recycle no-longer-visible pages. We copy _visiblePages because we may modify it while we're
   // iterating over it.
-  for (UIView<NIPagingScrollViewPage>* page in [[_visiblePages copy] autorelease]) {
+  NSMutableSet * visiblePageCopy = [_visiblePages copy];
+  for (UIView<NIPagingScrollViewPage>* page in visiblePageCopy) {
     if (!NSLocationInRange((NSUInteger)page.pageIndex, visiblePageRange)) {
       [_viewRecycler recycleView:page];
       [page removeFromSuperview];
@@ -291,6 +292,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
       [_visiblePages removeObject:page];
     }
   }
+  NI_RELEASE_SAFELY(visiblePageCopy);
 
   NSInteger oldCenterPageIndex = self.centerPageIndex;
     
