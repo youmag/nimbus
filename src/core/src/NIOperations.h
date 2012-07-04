@@ -44,13 +44,15 @@
  *      @ingroup Operations
  */
 @interface NIOperation : NSOperation {
+    BOOL _didFail;
+
 @private
   id<NIOperationDelegate> _delegate;
 
   NSInteger _tag;
 
   NSError* _lastError;
-
+    
 #if NS_BLOCKS_AVAILABLE
   // Performed on the main thread.
   NIBasicBlock _didStartBlock;
@@ -97,6 +99,7 @@
     NSHTTPURLResponse * _response;
     NSMutableData * _responseData;
     BOOL _isOperationDone;
+    NSCondition * _condition;
     
 @private
   // [in]
@@ -110,11 +113,17 @@
 // Designated initializer.
 - (id)initWithURL:(NSURL *)url;
 
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)response;
+- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)data;
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
+
 @property (readwrite, copy) NSURL* url;
 @property (readwrite, assign) NSTimeInterval timeout; // Default: 60
 @property (readwrite, assign) NSURLRequestCachePolicy cachePolicy; // Default: NSURLRequestUseProtocolCachePolicy
 @property (readonly, retain) NSData* data;
 @property (readwrite, retain) id processedObject;
+@property (nonatomic, retain) NSCondition * condition;
 
 @end
 
