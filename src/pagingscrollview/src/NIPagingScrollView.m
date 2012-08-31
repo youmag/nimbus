@@ -193,9 +193,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
   // Whatever image is currently displayed in the center of the screen is the currently
   // visible image.
-  return boundi((NSInteger)(floorf((contentOffset.x + boundsSize.width / 2) / boundsSize.width)
-                            + 0.5f),
-                0, self.numberOfPages - 1);
+  return boundi((NSInteger)(floorf((contentOffset.x + boundsSize.width / 2) / boundsSize.width) + 0.5f), 0, self.numberOfPages - 1);
 }
 
 
@@ -317,8 +315,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     _centerPageIndex = -1;
   }
 
-  if (oldCenterPageIndex != _centerPageIndex
-      && [self.delegate respondsToSelector:@selector(pagingScrollViewDidChangePages:)]) {
+  if (oldCenterPageIndex != _centerPageIndex && [self.delegate respondsToSelector:@selector(pagingScrollViewDidChangePages:)]) {
     [self.delegate pagingScrollViewDidChangePages:self];
   }
 }
@@ -611,6 +608,9 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setCenterPageIndex:(NSInteger)centerPageIndex {
+    if (centerPageIndex == 0) {
+        TODO();
+    }
   [self moveToPageAtIndex:centerPageIndex animated:NO];
 }
 
