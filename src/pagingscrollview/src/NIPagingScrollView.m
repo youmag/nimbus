@@ -608,9 +608,9 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setCenterPageIndex:(NSInteger)centerPageIndex {
-    if (centerPageIndex == 0) {
+    /*if (centerPageIndex == 0) {
         TODO();
-    }
+    }*/
   [self moveToPageAtIndex:centerPageIndex animated:NO];
 }
 
