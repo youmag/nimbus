@@ -193,7 +193,9 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
   // Whatever image is currently displayed in the center of the screen is the currently
   // visible image.
-  return boundi((NSInteger)(floorf((contentOffset.x + boundsSize.width / 2) / boundsSize.width) + 0.5f), 0, self.numberOfPages - 1);
+  return boundi((NSInteger)(floorf((contentOffset.x + boundsSize.width / 2) / boundsSize.width)
+                            + 0.5f),
+                0, self.numberOfPages - 1);
 }
 
 
@@ -275,49 +277,49 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma GCC diagnostic ignored "-Wselector"
 - (void)updateVisiblePages {
-  NSRange visiblePageRange = [self visiblePageRange];
-
-  // Recycle no-longer-visible pages. We copy _visiblePages because we may modify it while we're
-  // iterating over it.
-  NSMutableSet * visiblePageCopy = [_visiblePages copy];
-  for (UIView<NIPagingScrollViewPage>* page in visiblePageCopy) {
-    if (!NSLocationInRange((NSUInteger)page.pageIndex, visiblePageRange)) {
-      [_viewRecycler recycleView:page];
-      [page removeFromSuperview];
-
-      [self didRecyclePage:page];
-
-      [_visiblePages removeObject:page];
-    }
-  }
-  NI_RELEASE_SAFELY(visiblePageCopy);
-
-  NSInteger oldCenterPageIndex = self.centerPageIndex;
+    NSRange visiblePageRange = [self visiblePageRange];
     
-  if (_numberOfPages > 0) {
-    _centerPageIndex = [self currentVisiblePageIndex];
-      
-    // Prioritize displaying the currently visible page.
-    if (![self isDisplayingPageForIndex:_centerPageIndex]) {
-      [self displayPageAtIndex:_centerPageIndex];
+    // Recycle no-longer-visible pages. We copy _visiblePages because we may modify it while we're
+    // iterating over it.
+    NSMutableSet * visiblePageCopy = [_visiblePages copy];
+    for (UIView<NIPagingScrollViewPage>* page in visiblePageCopy) {
+        if (!NSLocationInRange((NSUInteger)page.pageIndex, visiblePageRange)) {
+            [_viewRecycler recycleView:page];
+            [page removeFromSuperview];
+            
+            [self didRecyclePage:page];
+            
+            [_visiblePages removeObject:page];
+        }
     }
-      
-    // Add missing pages.
-      //NSUInteger test = NSMaxRange(visiblePageRange);
-      //NSLog(@"%i", test);
-    for (NSUInteger pageIndex = visiblePageRange.location;
-         pageIndex < NSMaxRange(visiblePageRange); ++pageIndex) {
-      if (![self isDisplayingPageForIndex:(int)pageIndex]) {
-        [self displayPageAtIndex:(int)pageIndex];
-      }
+    NI_RELEASE_SAFELY(visiblePageCopy);
+    
+    NSInteger oldCenterPageIndex = self.centerPageIndex;
+    NSLog(@"ocpi=%i", oldCenterPageIndex);
+    if (_numberOfPages > 0) {
+        _centerPageIndex = [self currentVisiblePageIndex];
+        
+        // Prioritize displaying the currently visible page.
+        if (![self isDisplayingPageForIndex:_centerPageIndex]) {
+            [self displayPageAtIndex:_centerPageIndex];
+        }
+        
+        // Add missing pages.
+        NSUInteger test = NSMaxRange(visiblePageRange);
+        NSLog(@"%i", test);
+        for (NSUInteger pageIndex = visiblePageRange.location;
+             pageIndex < NSMaxRange(visiblePageRange); ++pageIndex) {
+            if (![self isDisplayingPageForIndex:(int)pageIndex]) {
+                [self displayPageAtIndex:(int)pageIndex];
+            }
+        }
+    } else {
+        _centerPageIndex = -1;
     }
-  } else {
-    _centerPageIndex = -1;
-  }
-
-  if (oldCenterPageIndex != _centerPageIndex && [self.delegate respondsToSelector:@selector(pagingScrollViewDidChangePages:)]) {
-    [self.delegate pagingScrollViewDidChangePages:self];
-  }
+    
+    if (oldCenterPageIndex != _centerPageIndex && [self.delegate respondsToSelector:@selector(pagingScrollViewDidChangePages:)]) {
+        [self.delegate pagingScrollViewDidChangePages:self];
+    }
 }
 #pragma GCC diagnostic warning "-Wselector"
 
@@ -370,19 +372,19 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma GCC diagnostic ignored "-Wselector"
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-  if (!_isModifyingContentOffset) {
-    // This method is called repeatedly as the user scrolls so updateVisiblePages must be
-    // light-weight enough not to noticeably impact performance.
-    [self updateVisiblePages];
-
-    if ([self.delegate respondsToSelector:@selector(pagingScrollViewDidScroll:)]) {
-      [self.delegate pagingScrollViewDidScroll:self];
+    if (!_isModifyingContentOffset) {
+        // This method is called repeatedly as the user scrolls so updateVisiblePages must be
+        // light-weight enough not to noticeably impact performance.
+        [self updateVisiblePages];
+        
+        if ([self.delegate respondsToSelector:@selector(pagingScrollViewDidScroll:)]) {
+            [self.delegate pagingScrollViewDidScroll:self];
+        }
     }
-  }
-
-  if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
-    [self.delegate scrollViewDidScroll:scrollView];
-  }
+    
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidScroll:)]) {
+        [self.delegate scrollViewDidScroll:scrollView];
+    }
 }
 #pragma GCC diagnostic warning "-Wselector"
 
