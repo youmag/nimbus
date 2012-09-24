@@ -134,6 +134,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)response {
+    if (!response) {
+        NIDASSERT(NO); // Why this? Find out wwhy and find a workaround. //TODO
+    }
     _response = [response retain];
     DLog(@"%@ - %i", [response URL], response.statusCode);
     NSDictionary * headers = [response allHeaderFields];
