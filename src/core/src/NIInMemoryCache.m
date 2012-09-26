@@ -149,7 +149,10 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (NIMemoryCacheInfo *)cacheInfoForName:(NSString *)name {
-  return [self.cacheMap objectForKey:name];
+    if (!name) {
+        return nil;
+    }
+    return [self.cacheMap objectForKey:name];
 }
 
 

@@ -109,9 +109,9 @@
 - (void)_compileDataWithListArray:(NSArray *)listArray {
   [self _resetCompiledData];
 
-  NITableViewModelSection* section = [NITableViewModelSection section];
+  NITableViewModelSection * section = [NITableViewModelSection section];
   section.rows = listArray;
-  self.sections = [NSArray arrayWithObject:section];
+  self.sections = @[section];
 }
 
 
