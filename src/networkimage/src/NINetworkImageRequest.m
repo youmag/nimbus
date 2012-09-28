@@ -174,7 +174,34 @@
     return CGRectMake(imageSize.width - displaySize.width,
                       imageSize.height - displaySize.height,
                       displaySize.width, displaySize.height);
-
+  } else if ( 20 == contentMode ) {
+      CGFloat scale = MIN(imageSize.width / displaySize.width,
+                          imageSize.height / displaySize.height);
+      CGSize scaledDisplaySize = CGSizeMake(displaySize.width * scale, displaySize.height * scale);
+      // test if crop top/bottom or left/right
+      if (imageSize.width / (displaySize.width / displaySize.height) > imageSize.height) {
+          return CGRectMake(floorf((imageSize.width - scaledDisplaySize.width) / 2),
+                            floorf((imageSize.height - scaledDisplaySize.height) / 2),
+                            scaledDisplaySize.width, scaledDisplaySize.height);
+      } else {
+          return CGRectMake(floorf((imageSize.width - scaledDisplaySize.width) / 2),
+                            imageSize.height * 0.15f,
+                            scaledDisplaySize.width, scaledDisplaySize.height);
+      }
+  } else if ( 21 == contentMode ) {
+      CGFloat scale = MIN(imageSize.width / displaySize.width,
+                          imageSize.height / displaySize.height);
+      
+      CGSize scaledDisplaySize = CGSizeMake(displaySize.width * scale, displaySize.height * scale);
+      return CGRectMake(floorf((imageSize.width - scaledDisplaySize.width) / 2),
+                        imageSize.height * 0.05f,
+                        scaledDisplaySize.width, scaledDisplaySize.height);
+  } else if ( 30 == contentMode ) {
+      if (imageSize.width < displaySize.width && imageSize.height < displaySize.height) {
+          return CGRectMake(0, 0, imageSize.width, imageSize.height);
+      } else {
+          return CGRectMake(0, 0, imageSize.width, imageSize.height);
+      }
   } else {
     // Not implemented
     NIDERROR(@"This content mode has not been implemented in the threaded network image view: %d",
