@@ -239,7 +239,10 @@
              || UIViewContentModeTopLeft == contentMode
              || UIViewContentModeTopRight == contentMode
              || UIViewContentModeBottomLeft == contentMode
-             || UIViewContentModeBottomRight == contentMode) {
+             || UIViewContentModeBottomRight == contentMode
+             || 21 == contentMode
+             || 20 == contentMode
+             || 30 == contentMode ) {
     // We're filling the entire destination, so the destination rect is the display rect.
     return CGRectMake(0, 0, displaySize.width, displaySize.height);
 
