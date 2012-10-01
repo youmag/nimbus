@@ -267,7 +267,7 @@
 - (void)operationDidStart {
 	[self performSelectorOnMainThread: @selector(onMainThreadOperationDidStart)
                          withObject: nil
-                      waitUntilDone: [NSThread isMainThread]];
+                      waitUntilDone: YES];
 }
 
 
