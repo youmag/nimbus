@@ -295,7 +295,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     NI_RELEASE_SAFELY(visiblePageCopy);
     
     NSInteger oldCenterPageIndex = self.centerPageIndex;
-    NSLog(@"ocpi=%i", oldCenterPageIndex);
+    
     if (_numberOfPages > 0) {
         _centerPageIndex = [self currentVisiblePageIndex];
         
@@ -305,8 +305,6 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
         }
         
         // Add missing pages.
-        NSUInteger test = NSMaxRange(visiblePageRange);
-        NSLog(@"%i", test);
         for (NSUInteger pageIndex = visiblePageRange.location;
              pageIndex < NSMaxRange(visiblePageRange); ++pageIndex) {
             if (![self isDisplayingPageForIndex:(int)pageIndex]) {
