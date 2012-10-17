@@ -218,9 +218,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)willDisplayPage:(UIView<NIPagingScrollViewPage> *)pageView atIndex:(NSInteger)pageIndex {
   pageView.pageIndex = pageIndex;
-
-    CGRect f = [self frameForPageAtIndex:pageIndex];
-  [pageView setFrame:f];
+  [pageView setFrame:[self frameForPageAtIndex:pageIndex]];
   
   [self willDisplayPage:pageView];
 }
@@ -306,8 +304,6 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
         }
         
         // Add missing pages.
-//        NSUInteger test = NSMaxRange(visiblePageRange);
-//        NSLog(@"%i", test);
         for (NSUInteger pageIndex = visiblePageRange.location;
              pageIndex < NSMaxRange(visiblePageRange); ++pageIndex) {
             if (![self isDisplayingPageForIndex:(int)pageIndex]) {
@@ -391,7 +387,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
   if (!decelerate) {
-    [self resetSurroundingPages];
+      [self resetSurroundingPages];
       [self didEndScrolling];
   }
 
@@ -403,12 +399,12 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-  [self resetSurroundingPages];
+    [self resetSurroundingPages];
     [self didEndScrolling];
 
-  if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)]) {
-    [self.delegate scrollViewDidEndDecelerating:scrollView];
-  }
+    if ([self.delegate respondsToSelector:@selector(scrollViewDidEndDecelerating:)]) {
+        [self.delegate scrollViewDidEndDecelerating:scrollView];
+    }
 }
 
 

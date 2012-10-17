@@ -110,7 +110,9 @@ extern const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin;
 - (void)didRecyclePage:(UIView<NIPagingScrollViewPage> *)pageView;
 
 // AYM: adBanner
--(void) didEndScrolling ;
+- (void)didEndScrolling ;
+- (CGRect)frameForPageAtIndex:(NSInteger)pageIndex ;
+- (void)layoutVisiblePages ;
 
 
 @end
