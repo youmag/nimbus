@@ -295,6 +295,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
     NI_RELEASE_SAFELY(visiblePageCopy);
     
     NSInteger oldCenterPageIndex = self.centerPageIndex;
+    
     if (_numberOfPages > 0) {
         _centerPageIndex = [self currentVisiblePageIndex];
         
