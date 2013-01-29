@@ -56,4 +56,9 @@
  */
 - (void)setFrameAndMaintainState:(CGRect)frame;
 
+// YM features
+-(void) pagingScrollViewWillShowAdBanner:(UIView*) adBannerView ;
+-(void) pagingScrollViewWillHideAdBanner:(UIView*) adBannerView ;
+-(void) setScrollsToTop:(BOOL) scroll ;
+
 @end
