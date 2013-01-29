@@ -26,7 +26,7 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 
 @interface NIPagingScrollView()
 
-@property (nonatomic, readwrite, retain) YMScrollView* pagingScrollView;
+//@property (nonatomic, readwrite, retain) UIScrollView * pagingScrollView;
 
 @end
 
@@ -37,7 +37,6 @@ const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin = 10;
 @implementation NIPagingScrollView
 
 @synthesize visiblePages = _visiblePages;
-@synthesize pagingScrollView = _pagingScrollView;
 @synthesize pageHorizontalMargin = _pageHorizontalMargin;
 @synthesize dataSource = _dataSource;
 @synthesize delegate = _delegate;

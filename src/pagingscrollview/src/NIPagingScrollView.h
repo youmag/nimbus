@@ -45,7 +45,7 @@ extern const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin;
 @interface NIPagingScrollView : UIView <UIScrollViewDelegate> {
 @protected
   // Views
-  YMScrollView* _pagingScrollView;
+  UIScrollView * _pagingScrollView;
 
   // Pages
   NSMutableSet* _visiblePages;
@@ -67,6 +67,8 @@ extern const CGFloat NIPagingScrollViewDefaultPageHorizontalMargin;
   id<NIPagingScrollViewDataSource> _dataSource;
   id<NIPagingScrollViewDelegate> _delegate;
 }
+
+@property (nonatomic, readwrite, retain) UIScrollView * pagingScrollView;
 
 #pragma mark Data Source
 
