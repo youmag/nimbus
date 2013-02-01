@@ -18,7 +18,6 @@
 #import <UIKit/UIKit.h>
 
 #import "NimbusCore.h"
-#import "YMScrollView.h"
 
 /**
  * numberOfPages will be this value until reloadData is called.
