@@ -101,10 +101,7 @@
       // Load the image from the network then.
       [self operationDidStart];
       
-      //NSError * networkError = nil;
-      //NSURLResponse * response = nil;
-      
-      self->_isOperationDone = NO;
+      _isOperationDone = NO;
       
       NSURLRequest * request = [NSURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
       
@@ -114,8 +111,7 @@
       
       // Preventing loop optimisation
       [[self condition] lock];
-      while (!self->_isOperationDone) {
-          //[NSThread sleepForTimeInterval:.25f];
+      while (!_isOperationDone) {
           [[self condition] wait];
       }
       [[self condition] unlock];
