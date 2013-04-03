@@ -405,6 +405,8 @@
       operation.imageCropRect = cropRect;
       operation.scaleOptions = self.scaleOptions;
       operation.interpolationQuality = self.interpolationQuality;
+      ((NINetworkRequestOperation *)operation).timeout = 5;
+        
       if (self.sizeForDisplay) {
         operation.imageDisplaySize = displaySize;
         operation.imageContentMode = contentMode;
