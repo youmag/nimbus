@@ -54,82 +54,82 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)cancelOperation {
-  if ([self.operation isKindOfClass:[NIOperation class]]) {
-    NIOperation* request = (NIOperation *)self.operation;
-    // Clear the delegate so that we don't receive a didFail notification when we cancel the
-    // operation.
-    request.delegate = nil;
-  }
-  [self.operation cancel];
+    if ([self.operation isKindOfClass:[NIOperation class]]) {
+        NIOperation* request = (NIOperation *)self.operation;
+        // Clear the delegate so that we don't receive a didFail notification when we cancel the
+        // operation.
+        request.delegate = nil;
+    }
+    [self.operation cancel];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)dealloc {
-  [self cancelOperation];
-
-  NI_RELEASE_SAFELY(_operation);
-
-  NI_RELEASE_SAFELY(_initialImage);
-
-  NI_RELEASE_SAFELY(_imageMemoryCache);
-  NI_RELEASE_SAFELY(_networkOperationQueue);
-
-  NI_RELEASE_SAFELY(_memoryCachePrefix);
-
-  NI_RELEASE_SAFELY(_lastPathToNetworkImage);
-
-  [super dealloc];
+    [self cancelOperation];
+    
+    NI_RELEASE_SAFELY(_operation);
+    
+    NI_RELEASE_SAFELY(_initialImage);
+    
+    NI_RELEASE_SAFELY(_imageMemoryCache);
+    NI_RELEASE_SAFELY(_networkOperationQueue);
+    
+    NI_RELEASE_SAFELY(_memoryCachePrefix);
+    
+    NI_RELEASE_SAFELY(_lastPathToNetworkImage);
+    
+    [super dealloc];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)assignDefaults {
-  self.sizeForDisplay = YES;
-  self.scaleOptions = NINetworkImageViewScaleToFitLeavesExcessAndScaleToFillCropsExcess;
-  self.interpolationQuality = kCGInterpolationDefault;
-
-  self.imageMemoryCache = [Nimbus imageMemoryCache];
-  self.networkOperationQueue = [Nimbus networkOperationQueue];
+    self.sizeForDisplay = YES;
+    self.scaleOptions = NINetworkImageViewScaleToFitLeavesExcessAndScaleToFillCropsExcess;
+    self.interpolationQuality = kCGInterpolationDefault;
+    
+    self.imageMemoryCache = [Nimbus imageMemoryCache];
+    self.networkOperationQueue = [Nimbus networkOperationQueue];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithImage:(UIImage *)image {
-  if ((self = [super initWithImage:image])) {
-    [self assignDefaults];
-
-    // Retain the initial image.
-    self.initialImage = image;
-  }
-  return self;
+    if ((self = [super initWithImage:image])) {
+        [self assignDefaults];
+        
+        // Retain the initial image.
+        self.initialImage = image;
+    }
+    return self;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithFrame:(CGRect)frame {
-  if ((self = [self initWithImage:nil])) {
-    self.frame = frame;
-  }
-  return self;
+    if ((self = [self initWithImage:nil])) {
+        self.frame = frame;
+    }
+    return self;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)initWithCoder:(NSCoder *)aDecoder {
-  if ((self = [super initWithCoder:aDecoder])) {
-    if (nil != self.image) {
-      self.initialImage = self.image;
+    if ((self = [super initWithCoder:aDecoder])) {
+        if (nil != self.image) {
+            self.initialImage = self.image;
+        }
+        [self assignDefaults];
     }
-    [self assignDefaults];
-  }
-  return self;
+    return self;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (id)init {
-  return [self initWithImage:nil];
+    return [self initWithImage:nil];
 }
 
 
@@ -138,27 +138,27 @@
                                imageSize:(CGSize)imageSize
                              contentMode:(UIViewContentMode)contentMode
                             scaleOptions:(NINetworkImageViewScaleOptions)scaleOptions {
-  NIDASSERT(NIIsStringWithAnyText(cacheIdentifier));
-
-  NSString* cacheKey = cacheIdentifier;
-
-  // Prefix cache key to create a namespace.
-  if (nil != self.memoryCachePrefix) {
-    cacheKey = [self.memoryCachePrefix stringByAppendingString:cacheKey];
-  }
-
-  // Append the size to the key. This allows us to differentiate cache keys by image dimension.
-  // If the display size ever changes, we want to ensure that we're fetching the correct image
-  // from the cache.
-  if (self.sizeForDisplay) {
-    cacheKey = [cacheKey stringByAppendingFormat:@"%@{%d,%d}",
-                NSStringFromCGSize(imageSize), contentMode, scaleOptions];
-  }
-
-  // The resulting cache key will look like:
-  // (memoryCachePrefix)/path/to/image({width,height}{contentMode,cropImageForDisplay})
-
-  return cacheKey;
+    NIDASSERT(NIIsStringWithAnyText(cacheIdentifier));
+    
+    NSString* cacheKey = cacheIdentifier;
+    
+    // Prefix cache key to create a namespace.
+    if (nil != self.memoryCachePrefix) {
+        cacheKey = [self.memoryCachePrefix stringByAppendingString:cacheKey];
+    }
+    
+    // Append the size to the key. This allows us to differentiate cache keys by image dimension.
+    // If the display size ever changes, we want to ensure that we're fetching the correct image
+    // from the cache.
+    if (self.sizeForDisplay) {
+        cacheKey = [cacheKey stringByAppendingFormat:@"%@{%d,%d}",
+                    NSStringFromCGSize(imageSize), contentMode, scaleOptions];
+    }
+    
+    // The resulting cache key will look like:
+    // (memoryCachePrefix)/path/to/image({width,height}{contentMode,cropImageForDisplay})
+    
+    return cacheKey;
 }
 
 
@@ -171,11 +171,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma GCC diagnostic ignored "-Wselector"
 - (void)_didStartLoading {
-  if ([self.delegate respondsToSelector:@selector(networkImageViewDidStartLoad:)]) {
-    [self.delegate networkImageViewDidStartLoad:self];
-  }
-
-  [self networkImageViewDidStartLoading];
+    id<NINetworkImageViewDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(networkImageViewDidStartLoad:)]) {
+            [aDel networkImageViewDidStartLoad:self];
+        }
+    }
+    
+    [self networkImageViewDidStartLoading];
 }
 #pragma GCC diagnostic warning "-Wselector"
 
@@ -188,42 +191,47 @@
                        contentMode: (UIViewContentMode)contentMode
                       scaleOptions: (NINetworkImageViewScaleOptions)scaleOptions
                     expirationDate: (NSDate *)expirationDate {
-  // Store the result image in the memory cache.
-  if (nil != self.imageMemoryCache) {
-    NSString* cacheKey = [self cacheKeyForCacheIdentifier:cacheIdentifier
-                                                imageSize:displaySize
-                                              contentMode:contentMode
-                                             scaleOptions:scaleOptions];
-
-    // Store the image in the memory cache, possibly with an expiration date.
-    [self.imageMemoryCache storeObject: image
-                              withName: cacheKey
-                          expiresAfter: expirationDate];
-  }
-
-  // Display the new image.
-  [self setImage:image];
-
-  self.operation = nil;
-
-  if ([self.delegate respondsToSelector:@selector(networkImageView:didLoadImage:)]) {
-    [self.delegate networkImageView:self didLoadImage:self.image];
-  }
-
-  [self networkImageViewDidLoadImage:image];
+    // Store the result image in the memory cache.
+    if (nil != self.imageMemoryCache) {
+        NSString* cacheKey = [self cacheKeyForCacheIdentifier:cacheIdentifier
+                                                    imageSize:displaySize
+                                                  contentMode:contentMode
+                                                 scaleOptions:scaleOptions];
+        
+        // Store the image in the memory cache, possibly with an expiration date.
+        [self.imageMemoryCache storeObject: image
+                                  withName: cacheKey
+                              expiresAfter: expirationDate];
+    }
+    
+    // Display the new image.
+    [self setImage:image];
+    
+    self.operation = nil;
+    
+    id<NINetworkImageViewDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(networkImageView:didLoadImage:)]) {
+            [aDel networkImageView:self didLoadImage:self.image];
+        }
+    }
+    
+    [self networkImageViewDidLoadImage:image];
 }
 #pragma GCC diagnostic warning "-Wselector"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)_didFailToLoadWithError:(NSError *)error {
-  self.operation = nil;
-    
-    if ([self.delegate respondsToSelector:@selector(networkImageViewDidFailLoad:)]) {
-        [self.delegate networkImageViewDidFailLoad:self];
+    self.operation = nil;
+    id<NINetworkImageViewDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(networkImageViewDidFailLoad:)]) {
+            [aDel networkImageViewDidFailLoad:self];
+        }
     }
-
-  [self networkImageViewDidFailToLoad:error];
+    
+    [self networkImageViewDidFailToLoad:error];
 }
 
 
@@ -235,24 +243,24 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)operationDidStart:(NSOperation *)operation {
-  [self _didStartLoading];
+    [self _didStartLoading];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)operationDidFinish:(NINetworkImageRequest *)operation {
-  [self _didFinishLoadingWithImage:operation.imageCroppedAndSizedForDisplay
-                   cacheIdentifier:operation.cacheIdentifier
-                       displaySize:operation.imageDisplaySize
-                       contentMode:operation.imageContentMode
-                      scaleOptions:operation.scaleOptions
-                    expirationDate:nil];
+    [self _didFinishLoadingWithImage:operation.imageCroppedAndSizedForDisplay
+                     cacheIdentifier:operation.cacheIdentifier
+                         displaySize:operation.imageDisplaySize
+                         contentMode:operation.imageContentMode
+                        scaleOptions:operation.scaleOptions
+                      expirationDate:nil];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)operationDidFail:(NSOperation *)operation withError:(NSError *)error {
-  [self _didFailToLoadWithError:error];
+    [self _didFailToLoadWithError:error];
 }
 
 
@@ -264,19 +272,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)networkImageViewDidStartLoading {
-  // No-op. Meant to be overridden.
+    // No-op. Meant to be overridden.
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)networkImageViewDidLoadImage:(UIImage *)image {
-  // No-op. Meant to be overridden.
+    // No-op. Meant to be overridden.
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)networkImageViewDidFailToLoad:(NSError *)error {
-  // No-op. Meant to be overridden.
+    // No-op. Meant to be overridden.
 }
 
 
@@ -288,143 +296,145 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPathToNetworkImage:(NSString *)pathToNetworkImage {
-  [self setPathToNetworkImage: pathToNetworkImage
-               forDisplaySize: CGSizeZero
-                  contentMode: self.contentMode
-                     cropRect: CGRectZero];
+    [self setPathToNetworkImage: pathToNetworkImage
+                 forDisplaySize: CGSizeZero
+                    contentMode: self.contentMode
+                       cropRect: CGRectZero];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPathToNetworkImage:(NSString *)pathToNetworkImage forDisplaySize:(CGSize)displaySize {
-  [self setPathToNetworkImage: pathToNetworkImage
-               forDisplaySize: displaySize
-                  contentMode: self.contentMode
-                     cropRect: CGRectZero];
+    [self setPathToNetworkImage: pathToNetworkImage
+                 forDisplaySize: displaySize
+                    contentMode: self.contentMode
+                       cropRect: CGRectZero];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPathToNetworkImage:(NSString *)pathToNetworkImage forDisplaySize:(CGSize)displaySize contentMode:(UIViewContentMode)contentMode {
-  [self setPathToNetworkImage: pathToNetworkImage
-               forDisplaySize: displaySize
-                  contentMode: contentMode
-                     cropRect: CGRectZero];
+    [self setPathToNetworkImage: pathToNetworkImage
+                 forDisplaySize: displaySize
+                    contentMode: contentMode
+                       cropRect: CGRectZero];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPathToNetworkImage:(NSString *)pathToNetworkImage cropRect:(CGRect)cropRect {
-  [self setPathToNetworkImage: pathToNetworkImage
-               forDisplaySize: CGSizeZero
-                  contentMode: self.contentMode
-                     cropRect: cropRect];
+    [self setPathToNetworkImage: pathToNetworkImage
+                 forDisplaySize: CGSizeZero
+                    contentMode: self.contentMode
+                       cropRect: cropRect];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPathToNetworkImage:(NSString *)pathToNetworkImage contentMode:(UIViewContentMode)contentMode {
-  [self setPathToNetworkImage: pathToNetworkImage
-               forDisplaySize: CGSizeZero
-                  contentMode: contentMode
-                     cropRect: CGRectZero];
+    [self setPathToNetworkImage: pathToNetworkImage
+                 forDisplaySize: CGSizeZero
+                    contentMode: contentMode
+                       cropRect: CGRectZero];
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPathToNetworkImage:(NSString *)pathToNetworkImage forDisplaySize:(CGSize)displaySize contentMode:(UIViewContentMode)contentMode cropRect:(CGRect)cropRect {
-  [self cancelOperation];
-
-  if (NIIsStringWithAnyText(pathToNetworkImage)) {
-    self.lastPathToNetworkImage = pathToNetworkImage;
-
-    NSURL* url = nil;
-
-    // Check for file URLs.
-    if ([pathToNetworkImage hasPrefix:@"/"]) {
-      // If the url starts with / then it's likely a file URL, so treat it accordingly.
-      url = [NSURL fileURLWithPath:pathToNetworkImage];
-
-    } else {
-      // Otherwise we assume it's a regular URL.
-      url = [NSURL URLWithString:pathToNetworkImage];
-    }
-
-    // If the URL failed to be created, there's not much we can do here.
-    if (nil == url) {
-      return;
-    }
+    [self cancelOperation];
     
-    NINetworkImageRequest* request = [[[NINetworkImageRequest alloc] initWithURL:url] autorelease];
-    [self setNetworkImageOperation:request forDisplaySize:displaySize contentMode:contentMode cropRect:cropRect];
-  }
+    if (NIIsStringWithAnyText(pathToNetworkImage)) {
+        self.lastPathToNetworkImage = pathToNetworkImage;
+        
+        NSURL* url = nil;
+        
+        // Check for file URLs.
+        if ([pathToNetworkImage hasPrefix:@"/"]) {
+            // If the url starts with / then it's likely a file URL, so treat it accordingly.
+            url = [NSURL fileURLWithPath:pathToNetworkImage];
+            
+        } else {
+            // Otherwise we assume it's a regular URL.
+            url = [NSURL URLWithString:pathToNetworkImage];
+        }
+        
+        // If the URL failed to be created, there's not much we can do here.
+        if (nil == url) {
+            return;
+        }
+        
+        NINetworkImageRequest* request = [[[NINetworkImageRequest alloc] initWithURL:url] autorelease];
+        [self setNetworkImageOperation:request forDisplaySize:displaySize contentMode:contentMode cropRect:cropRect];
+    }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setNetworkImageOperation:(NIOperation<NINetworkImageOperation> *)operation forDisplaySize:(CGSize)displaySize contentMode:(UIViewContentMode)contentMode cropRect:(CGRect)cropRect {
-  [self cancelOperation];
-
-  if (nil != operation) {
-    // We explicitly do not allow negative display sizes. Check the call stack to figure
-    // out who is providing a negative display size. It's possible that displaySize is an
-    // uninitialized CGSize structure.
-    NIDASSERT(displaySize.width >= 0);
-    NIDASSERT(displaySize.height >= 0);
-
-    // If an invalid display size is provided, use the image view's frame instead.
-    if (0 >= displaySize.width || 0 >= displaySize.height) {
-      displaySize = self.frame.size;
-    }
-
-    UIImage* image = nil;
-
-    // Attempt to load the image from memory first.
-    if (nil != self.imageMemoryCache) {
-      NSString* cacheKey = [self cacheKeyForCacheIdentifier:operation.cacheIdentifier
-                                                  imageSize:displaySize
-                                                contentMode:contentMode
-                                               scaleOptions:self.scaleOptions];
-      image = [self.imageMemoryCache objectWithName:cacheKey];
-    }
-
-    if (nil != image) {
-      // We successfully loaded the image from memory.
-      [self setImage:image];
-
-      if ([self.delegate respondsToSelector:@selector(networkImageView:didLoadImage:)]) {
-        [self.delegate networkImageView:self didLoadImage:self.image];
-      }
-
-      [self networkImageViewDidLoadImage:image];
-
-    } else {
-      // Unable to load the image from memory, so let's fire off the operation now.
-      operation.delegate = self;
-
-      operation.imageCropRect = cropRect;
-      operation.scaleOptions = self.scaleOptions;
-      operation.interpolationQuality = self.interpolationQuality;
-      ((NINetworkRequestOperation *)operation).timeout = 5;
+    [self cancelOperation];
+    
+    if (nil != operation) {
+        // We explicitly do not allow negative display sizes. Check the call stack to figure
+        // out who is providing a negative display size. It's possible that displaySize is an
+        // uninitialized CGSize structure.
+        NIDASSERT(displaySize.width >= 0);
+        NIDASSERT(displaySize.height >= 0);
         
-      if (self.sizeForDisplay) {
-        operation.imageDisplaySize = displaySize;
-        operation.imageContentMode = contentMode;
-      }
-
-      self.operation = operation;
-
-      [self.networkOperationQueue addOperation:self.operation];
+        // If an invalid display size is provided, use the image view's frame instead.
+        if (0 >= displaySize.width || 0 >= displaySize.height) {
+            displaySize = self.frame.size;
+        }
+        
+        UIImage* image = nil;
+        
+        // Attempt to load the image from memory first.
+        if (nil != self.imageMemoryCache) {
+            NSString* cacheKey = [self cacheKeyForCacheIdentifier:operation.cacheIdentifier
+                                                        imageSize:displaySize
+                                                      contentMode:contentMode
+                                                     scaleOptions:self.scaleOptions];
+            image = [self.imageMemoryCache objectWithName:cacheKey];
+        }
+        
+        if (nil != image) {
+            // We successfully loaded the image from memory.
+            [self setImage:image];
+            id<NINetworkImageViewDelegate> aDel = [self delegate];
+            if (nil != aDel) {
+                if ([aDel respondsToSelector:@selector(networkImageView:didLoadImage:)]) {
+                    [aDel networkImageView:self didLoadImage:self.image];
+                }
+            }
+            
+            [self networkImageViewDidLoadImage:image];
+            
+        } else {
+            // Unable to load the image from memory, so let's fire off the operation now.
+            operation.delegate = self;
+            
+            operation.imageCropRect = cropRect;
+            operation.scaleOptions = self.scaleOptions;
+            operation.interpolationQuality = self.interpolationQuality;
+            ((NINetworkRequestOperation *)operation).timeout = 5;
+            
+            if (self.sizeForDisplay) {
+                operation.imageDisplaySize = displaySize;
+                operation.imageContentMode = contentMode;
+            }
+            
+            self.operation = operation;
+            
+            [self.networkOperationQueue addOperation:self.operation];
+        }
     }
-  }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)prepareForReuse {
-  [self cancelOperation];
-
-  [self setImage:self.initialImage];
+    [self cancelOperation];
+    
+    [self setImage:self.initialImage];
 }
 
 
@@ -436,35 +446,35 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setInitialImage:(UIImage *)initialImage {
-  if (_initialImage != initialImage) {
-    BOOL updateViewImage = (_initialImage == self.image);
-    [_initialImage release];
-    _initialImage = [initialImage retain];
-
-    if (updateViewImage) {
-      [self setImage:_initialImage];
+    if (_initialImage != initialImage) {
+        BOOL updateViewImage = (_initialImage == self.image);
+        [_initialImage release];
+        _initialImage = [initialImage retain];
+        
+        if (updateViewImage) {
+            [self setImage:_initialImage];
+        }
     }
-  }
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (BOOL)isLoading {
-  return nil != self.operation;
+    return nil != self.operation;
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setNetworkOperationQueue:(NSOperationQueue *)queue {
-  // Don't allow a nil network operation queue.
-  NIDASSERT(nil != queue);
-  if (nil == queue) {
-    queue = [Nimbus networkOperationQueue];
-  }
-  if (queue != _networkOperationQueue) {
-    [_networkOperationQueue release];
-    _networkOperationQueue = [queue retain];
-  }
+    // Don't allow a nil network operation queue.
+    NIDASSERT(nil != queue);
+    if (nil == queue) {
+        queue = [Nimbus networkOperationQueue];
+    }
+    if (queue != _networkOperationQueue) {
+        [_networkOperationQueue release];
+        _networkOperationQueue = [queue retain];
+    }
 }
 
 
