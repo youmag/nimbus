@@ -115,6 +115,7 @@
           if (self.isCancelled) {
               [_connection unscheduleFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
               [_connection cancel];
+              [[self condition] unlock];
               return;
           }
           
