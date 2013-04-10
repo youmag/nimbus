@@ -69,7 +69,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)main {
-  //NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   
   if ([self.url isFileURL]) {
     // Special case: load the image from disk without hitting the network.
@@ -124,7 +124,7 @@
 
   } // COV_NF_END
 
-  //NI_RELEASE_SAFELY(pool);
+  NI_RELEASE_SAFELY(pool);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
