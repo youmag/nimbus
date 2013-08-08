@@ -122,6 +122,7 @@
 
     // We implement viewForZoomingInScrollView: and return the image view for zooming.
     _scrollView.delegate = self;
+      _scrollView.scrollsToTop = NO ;
 
     // Disable the scroll indicators.
     _scrollView.showsVerticalScrollIndicator = NO;
