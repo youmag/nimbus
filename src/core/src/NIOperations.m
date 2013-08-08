@@ -80,9 +80,7 @@
 
     // The meat of the load-from-disk operation.
     NSString* filePath = [self.url path];
-    NSMutableData* data = [NSMutableData dataWithContentsOfFile:filePath
-                                                        options:0
-                                                          error:&dataReadError];
+    NSMutableData* data = [NSMutableData dataWithContentsOfFile:filePath options:0 error:&dataReadError];
 
     if (nil != dataReadError) {
       // This generally happens when the file path points to a file that doesn't exist.
@@ -98,29 +96,33 @@
     }
 
   } else { // COV_NF_START
+
       // Load the image from the network then.
       [self operationDidStart];
       
-      //NSError * networkError = nil;
-      //NSURLResponse * response = nil;
-      
-      self->_isOperationDone = NO;
+      _isOperationDone = NO;
       
       NSURLRequest * request = [NSURLRequest requestWithURL:self.url cachePolicy:self.cachePolicy timeoutInterval:self.timeout];
-      
       _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
       [_connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+      //[_connection setDelegateQueue:[Nimbus networkOperationQueue]];
       [_connection start];
       
       // Preventing loop optimisation
       [[self condition] lock];
-      while (!self->_isOperationDone) {
-          //[NSThread sleepForTimeInterval:.25f];
+      while (!_isOperationDone) {
+          
+          if (self.isCancelled) {
+              [_connection unscheduleFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+              [_connection cancel];
+              [[self condition] unlock];
+              return;
+          }
+          
           [[self condition] wait];
       }
       [[self condition] unlock];
 
-      NI_RELEASE_SAFELY(pool);
   } // COV_NF_END
 
   NI_RELEASE_SAFELY(pool);
@@ -138,7 +140,6 @@
         NIDASSERT(NO); // Why this? Find out wwhy and find a workaround. //TODO
     }
     _response = [response retain];
-    DLog(@"%@ - %i", [response URL], response.statusCode);
     NSDictionary * headers = [response allHeaderFields];
     int contentLength = [[headers objectForKey:@"Content-Length"] intValue];
     
@@ -213,14 +214,14 @@
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+/*- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
     NSCachedURLResponse * memOnlyCachedResponse =
     [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response
                                              data:cachedResponse.data
                                          userInfo:cachedResponse.userInfo
                                     storagePolicy:NSURLCacheStorageAllowedInMemoryOnly];
     return [memOnlyCachedResponse autorelease];
-}
+}*/
 
 @end
 
@@ -292,9 +293,12 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma GCC diagnostic ignored "-Wselector"
 - (void)operationWillFinish {
-  if ([self.delegate respondsToSelector:@selector(operationWillFinish:)]) {
-    [self.delegate operationWillFinish:self];
-  }
+    id<NIOperationDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(operationWillFinish:)]) {
+            [aDel operationWillFinish:self];
+        }
+    }
 
 #if NS_BLOCKS_AVAILABLE
   if (nil != self.willFinishBlock) {
@@ -316,9 +320,12 @@
   // This method should only be called on the main thread.
   NIDASSERT([NSThread isMainThread]);
 
-  if ([self.delegate respondsToSelector:@selector(operationDidStart:)]) {
-    [self.delegate operationDidStart:self];
-  }
+    id<NIOperationDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(operationDidStart:)]) {
+            [aDel operationDidStart:self];
+        }
+    }
 
 #if NS_BLOCKS_AVAILABLE
   if (nil != self.didStartBlock) {
@@ -334,9 +341,12 @@
   // This method should only be called on the main thread.
   NIDASSERT([NSThread isMainThread]);
 
-  if ([self.delegate respondsToSelector:@selector(operationDidFinish:)]) {
-    [self.delegate operationDidFinish:self];
-  }
+    id<NIOperationDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(operationDidFinish:)]) {
+            [aDel operationDidFinish:self];
+        }
+    }
 
 #if NS_BLOCKS_AVAILABLE
   if (nil != self.didFinishBlock) {
@@ -352,10 +362,13 @@
   // This method should only be called on the main thread.
   NIDASSERT([NSThread isMainThread]);
 
-  if ([self.delegate respondsToSelector:@selector(operationDidFail:withError:)]) {
-    [self.delegate operationDidFail:self withError:error];
-  }
-
+    id<NIOperationDelegate> aDel = [self delegate];
+    if (nil != aDel) {
+        if ([aDel respondsToSelector:@selector(operationDidFail:withError:)]) {
+            [aDel operationDidFail:self withError:error];
+        }
+    }
+  
 #if NS_BLOCKS_AVAILABLE
   if (nil != self.didFailWithErrorBlock) {
     self.didFailWithErrorBlock(self, error);

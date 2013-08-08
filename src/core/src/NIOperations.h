@@ -100,11 +100,11 @@
     NSMutableData * _responseData;
     BOOL _isOperationDone;
     NSCondition * _condition;
+    NSTimeInterval _timeout;
     
 @private
   // [in]
   NSURL* _url;
-  NSTimeInterval _timeout;
   // [out]
   NSData* _data;
   id _processedObject;
